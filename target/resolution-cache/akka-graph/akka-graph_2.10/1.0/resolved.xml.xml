@@ -4,7 +4,7 @@
 		module="akka-graph_2.10"
 		revision="1.0"
 		status="integration"
-		publication="20140309133103"
+		publication="20140309162104"
 	>
 		<description>
 		Akka Graph

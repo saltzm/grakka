@@ -2,16 +2,32 @@
 [0m[[0mdebug[0m] [0mStarting sandboxed run...[0m
 [0m[[0mdebug[0m] [0mWaiting for threads to exit or System.exit to be called.[0m
 [0m[[0mdebug[0m] [0m  Classpath:[0m
-[0m[[0mdebug[0m] [0m	/Users/saltzm/Documents/school/sem2/mod_comp_systems/akka_practice/grakka/target/scala-2.10/classes[0m
+[0m[[0mdebug[0m] [0m	/Users/saltzm/Documents/school/sem2/mod_comp_systems/project/grakka/target/scala-2.10/classes[0m
 [0m[[0mdebug[0m] [0m	/Users/saltzm/.sbt/boot/scala-2.10.2/lib/scala-library.jar[0m
 [0m[[0mdebug[0m] [0m	/Users/saltzm/.ivy2/cache/com.typesafe.akka/akka-actor_2.10/jars/akka-actor_2.10-2.2.3.jar[0m
 [0m[[0mdebug[0m] [0m	/Users/saltzm/.ivy2/cache/com.typesafe/config/bundles/config-1.0.2.jar[0m
 [0m[[0mdebug[0m] [0mWaiting for thread run-main to exit[0m
 [0m[[0mdebug[0m] [0m	Thread run-main exited.[0m
+[0m[[0mdebug[0m] [0mWaiting for thread graphSystem-akka.actor.default-dispatcher-3 to exit[0m
+[0m[[0mdebug[0m] [0m	Thread graphSystem-akka.actor.default-dispatcher-3 exited.[0m
 [0m[[0mdebug[0m] [0mWaiting for thread graphSystem-scheduler-1 to exit[0m
 [0m[[0mdebug[0m] [0m	Thread graphSystem-scheduler-1 exited.[0m
-[0m[[0mdebug[0m] [0mWaiting for thread graphSystem-akka.actor.default-dispatcher-9 to exit[0m
-[0m[[0mdebug[0m] [0m	Thread graphSystem-akka.actor.default-dispatcher-9 exited.[0m
+[0m[[0mdebug[0m] [0mWaiting for thread graphSystem-akka.actor.default-dispatcher-8 to exit[0m
+[0m[[0mdebug[0m] [0m	Thread graphSystem-akka.actor.default-dispatcher-8 exited.[0m
+[0m[[0mdebug[0m] [0mWaiting for thread graphSystem-akka.actor.default-dispatcher-11 to exit[0m
+[0m[[0mdebug[0m] [0m	Thread graphSystem-akka.actor.default-dispatcher-11 exited.[0m
+[0m[[0mdebug[0m] [0mWaiting for thread graphSystem-akka.actor.default-dispatcher-4 to exit[0m
+[0m[[0mdebug[0m] [0m	Thread graphSystem-akka.actor.default-dispatcher-4 exited.[0m
+[0m[[0mdebug[0m] [0mWaiting for thread graphSystem-akka.actor.default-dispatcher-7 to exit[0m
+[0m[[0mdebug[0m] [0m	Thread graphSystem-akka.actor.default-dispatcher-7 exited.[0m
+[0m[[0mdebug[0m] [0mWaiting for thread graphSystem-akka.actor.default-dispatcher-12 to exit[0m
+[0m[[0mdebug[0m] [0m	Thread graphSystem-akka.actor.default-dispatcher-12 exited.[0m
+[0m[[0mdebug[0m] [0mWaiting for thread graphSystem-akka.actor.default-dispatcher-10 to exit[0m
+[0m[[0mdebug[0m] [0m	Thread graphSystem-akka.actor.default-dispatcher-10 exited.[0m
+[0m[[0mdebug[0m] [0mWaiting for thread graphSystem-akka.actor.default-dispatcher-6 to exit[0m
+[0m[[0mdebug[0m] [0m	Thread graphSystem-akka.actor.default-dispatcher-6 exited.[0m
+[0m[[0mdebug[0m] [0mWaiting for thread graphSystem-akka.actor.default-dispatcher-5 to exit[0m
+[0m[[0mdebug[0m] [0m	Thread graphSystem-akka.actor.default-dispatcher-5 exited.[0m
 [0m[[0mdebug[0m] [0mInterrupting remaining threads (should be all daemons).[0m
 [0m[[0mdebug[0m] [0mSandboxed run complete..[0m
 [0m[[0mdebug[0m] [0mExited with code 0[0m
