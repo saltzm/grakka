@@ -1,0 +1,15 @@
+
+
+Distributed (or at least parallel) graph framework
+Agents:
+    Graph -> Responsible for initial access to vertices
+    PathFinder -> Responsible for sending probes and collecting results
+    Probe -> like a reactive agent 
+
+TODO:
+
+add edge label capabilities
+    what is an edge?
+    just a set of attributes that can be attached to a child
+read in data files
+distribution
