@@ -22,8 +22,7 @@ class PathMatcher (graph: ActorRef, query: List[(Vertex, Edge)], input: String)
       val formattedMessage = mat.reverse.map(v=> (v.id, "label: " + v.attributes("label")))
       if (numberOfMessagesReceived < 10)
         println(s"${self.path}: $formattedMessage") // TODO
-      else if (numberOfMessagesReceived % 100 == 0 && numberOfMessagesReceived <
-      1000)
+      else if (numberOfMessagesReceived % 100 == 0)
         print(numberOfMessagesReceived + " at " + (System.currentTimeMillis() -
         start) + "ms, ")
   }
