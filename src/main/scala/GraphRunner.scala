@@ -5,42 +5,41 @@ import Graph._
 object GraphRunner extends Application {
   val system = ActorSystem("graphSystem")
 
-  // create graph
+  // Start graph actor
   val graph = system.actorOf(Props[GraphActor], "graph")
+
+  // Create random graph, adding vertices to the graph through message-passing
+  val (graphSize, avDegree, nLabels, nEdgeTypes) = (200000, 20, 10, 2)
+  GraphGenerator.generateRandomGraph(graph, graphSize, avDegree, nLabels, nEdgeTypes)
+
+  // Create path query
   val query = List(
     (Vertex("1", Map("label" -> "1"), Set()), Edge("0")),
     (Vertex("2", Map("label" -> "2"), Set()), Edge("1")),
-    (Vertex("3", Map("label" -> "3"), Set()), Edge("1")),
-    (Vertex("4", Map("label" -> "4"), Set()), Edge("1")),
-    (Vertex("5", Map("label" -> "5"), Set()), Edge("0"))
-  )
-  val query2 = List(
-    (Vertex("1", Map("label" -> "7"), Set()), Edge("1")),
-    (Vertex("2", Map("label" -> "7"), Set()), Edge("1")),
-    (Vertex("3", Map("label" -> "7"), Set()), Edge("1"))
+    (Vertex("3", Map("label" -> "3"), Set()), Edge("1"))/*,*/
+    //(Vertex("4", Map("label" -> "4"), Set()), Edge("1")),
+    /*(Vertex("5", Map("label" -> "5"), Set()), Edge("0"))*/
   )
 
-  // offer choice of algorithms to run
-  // user enters choice with command line
-  val input = "" // TODO
-  // launches actor corresponding to specific algorithm
-  // that algorithm should have access to graph ActorRef and interact with the
-  // graph in that way
 
-  val algorithm = system.actorOf(Props(classOf[PathMatcher], graph, query, input), "algorithm")
-  val algorithm2 = system.actorOf(Props(classOf[PathMatcher], graph, query2,
-    input), "algorithm2")
+  // Detect user input for quit signal
+  var run = 0
+  var alg: ActorRef = _
   try {
     for(ln <- io.Source.stdin.getLines) {
       if (ln == "q") {
         system.shutdown() 
-        throw new Exception("quitting")
+        throw new Exception("shutdown")
+      } else if (ln == "r") {
+        // Execute path query
+        // TODO: AWFUL
+        try{ system.stop(alg) } catch { case _: Throwable => }
+        alg = system.actorOf(Props(classOf[PathMatcher], graph, query, ""),
+          s"alg${run}")
+        run += 1
       }
     }
-  } catch {
-    case _: Throwable => println("shutdown")
-  }
-
+  } catch { case e: Throwable => println(e.getMessage) }
 }
 
 

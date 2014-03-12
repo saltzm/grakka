@@ -1,4 +1,5 @@
 import akka.actor.{Actor, Props, ActorSystem, ActorRef, ActorSelection}
+import GraphMessages._
 
 object Graph {
   type Id = String
@@ -8,7 +9,6 @@ object Graph {
 }
 
 class VertexActor (val vertex: Graph.Vertex) extends Actor {
-  import GraphMessages._
 
   def children = vertex.children.map { case (cid, e) =>
     (context.actorSelection(s"../${cid}"), e)
@@ -19,6 +19,6 @@ class VertexActor (val vertex: Graph.Vertex) extends Actor {
       p.nextSteps(this).foreach { case (destination, message) =>
         destination ! message
       }
-    case _ => println("WTF MTHFCER")
+    case _ => println("Unknown message")
   }
 }
