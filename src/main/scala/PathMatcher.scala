@@ -49,7 +49,7 @@ class PathMatcher (graph: ActorRef, query: List[(Vertex, Edge)], input: String)
         // finished with success
         // TODO: GROSS with actorSelection on self
         if (queryPath.tail.isEmpty) 
-          List((context.actorSelection(self.path), va.vertex::matchSoFar)) 
+          List((context.actorSelection(probeMonitor.path), va.vertex::matchSoFar)) 
         else {
           //need list of children where the edge going to that child matches the
           //edge in the head of the queryPath
