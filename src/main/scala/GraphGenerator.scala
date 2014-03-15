@@ -3,7 +3,7 @@ import scala.util.Random
 import Graph._
 import GraphMessages._
 
-
+// TODO: refactor
 object GraphGenerator {
   private def uniform (mean: Int) = rand.nextInt(mean*2 + 1)
   private def lognormal (mean: Double, stdDev: Double) = 
@@ -21,7 +21,7 @@ object GraphGenerator {
         (rand.nextInt(nVertices).toString.asInstanceOf[Id],
           Edge(rand.nextInt(nEdgeTypes).toString))
       ).toSet
-      graph ! AddVertex(Vertex(i.toString, Map("label" ->
+      graph ! AddVertex(Vertex(i.toString, Map("l" ->
         rand.nextInt(nLabels).toString), children))
     }
     println(s"nEdges: $nEdges")
@@ -39,7 +39,7 @@ object GraphGenerator {
         (rand.nextInt(nVertices).toString.asInstanceOf[Id],
           Edge(rand.nextInt(nEdgeTypes).toString))
       ).toSet
-      graph ! AddVertex(Vertex(i.toString, Map("label" ->
+      graph ! AddVertex(Vertex(i.toString, Map("l" ->
         rand.nextInt(nLabels).toString), children))
     }
     println(s"nEdges: $nEdges")

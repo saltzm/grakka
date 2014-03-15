@@ -7,8 +7,10 @@ import GraphGenerator._
 class GraphActor extends Actor with Stash {
   import context._
 
+  var readyVertices: Int = _
   override def preStart() = {
     become(loading)
+    readyVertices = 0
   }
 
   def loading: Receive = {
@@ -17,12 +19,22 @@ class GraphActor extends Actor with Stash {
     // TODO: Doesn't check if vertex already exists in the graph
     case StartLoading => //already loading
     case AddVertex(v: Vertex) =>
-      actorOf(Props(classOf[VertexActor], v), v.id)
-    case StopLoading => println("Graph done loading"); unbecome()
+      val child = actorOf(Props(classOf[VertexActor], v), v.id)
+    case VertexReady =>
+      readyVertices += 1
+      println("readyVertices: " + readyVertices)
+      if (readyVertices == children.size) { 
+        println("All vertices ready. Graph done loading") 
+        unbecome()
+      }
+    case StopLoading => 
+      children.foreach (_ ! GraphFinishedLoading)
+      println("Finished creating vertex actors")
     case msg => stash()
   }
 
   def receive = {
+    case GetNumberOfVertices => sender ! NumberOfVertices(children.size)
     case StartLoading => become(loading)
     case Broadcast(message) => children.foreach (_ ! message)
     // TODO: maybe this should just work... 
