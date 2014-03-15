@@ -14,6 +14,7 @@ class VertexActor (val vertex: Graph.Vertex) extends Actor {
     (context.actorSelection(s"../${cid}"), e)
   }
 
+  // testcomment
   def receive = {
     case p: Probe =>
       p.nextSteps(this).foreach { case (destination, message) =>
