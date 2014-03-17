@@ -4,27 +4,45 @@ import GraphMessages._
 
 class PathMatcher (graph: ActorRef, query: List[(Vertex, Edge)], input: String) 
   extends Actor {
+  case class PathMatch (mat: List[Id])
+  case class NewProbesCreated (n: Int)
+  case object ProbeFinished
   // convert input string into query data structure (too much for the moment)
 
   // launches intermediate result collectors? nah, not right now, but possible
   // sends probes to all nodes in graph
   var start: Long = _
   override def preStart() = {
-    graph ! Broadcast(PathQueryProbe(query, List[Vertex]()))
+    graph ! GetNumberOfVertices
+    graph ! Broadcast(PathQueryProbe(query, List[Id]()))
     start = System.currentTimeMillis()
     println("PathFinder loading complete")
   }
 
+  def decrementProbes: Unit = {
+    numberOfOutstandingProbes -= 1
+    if (numberOfOutstandingProbes <= 0) {
+      println(s"\nFinished with $numberOfMatches matches and " +
+              s"$numberOfOutstandingProbes outstanding probes at " +
+              s"${System.currentTimeMillis() - start} ms")
+      context.stop(self)
+    }
+  }
+
   var numberOfMessagesReceived = 0
   def receive = {
-    case mat: List[Vertex] => 
+    case PathMatch(mat) => 
       numberOfMessagesReceived += 1
-      val formattedMessage = mat.reverse.map(v=> (v.id, "label: " + v.attributes("label")))
+      val formattedMessage = mat.reverse.map(v=> (v.id, v.attributes))
       if (numberOfMessagesReceived < 10)
         println(s"${self.path}: $formattedMessage") // TODO
       else if (numberOfMessagesReceived % 100 == 0)
         print(numberOfMessagesReceived + " at " + (System.currentTimeMillis() -
         start) + "ms, ")
+      decrementProbes
+    case NewProbesCreated(n: Int) => numberOfOutstandingProbes += n
+    case ProbeFinished => decrementProbes
+    case NumberOfVertices(n: Int) => numberOfOutstandingProbes += n
   }
 
   /**
@@ -32,7 +50,7 @@ class PathMatcher (graph: ActorRef, query: List[(Vertex, Edge)], input: String)
     * TODO: could make matchSoFar more efficient by using id
     */
   case class PathQueryProbe (queryPath: List[(Vertex, Edge)], 
-    matchSoFar: List[Vertex]) extends Probe (self) {
+    matchSoFar: List[Id]) extends Probe (self) {
 
     // vcf: vertex comparison function
     // TODO make more efficient
@@ -49,7 +67,7 @@ class PathMatcher (graph: ActorRef, query: List[(Vertex, Edge)], input: String)
         // finished with success
         // TODO: GROSS with actorSelection on self
         if (queryPath.tail.isEmpty) 
-          List((context.actorSelection(probeMonitor.path), va.vertex::matchSoFar)) 
+          List((context.actorSelection(probeMonitor.path), va.vertex.id::matchSoFar)) 
         else {
           //need list of children where the edge going to that child matches the
           //edge in the head of the queryPath
@@ -61,7 +79,7 @@ class PathMatcher (graph: ActorRef, query: List[(Vertex, Edge)], input: String)
           } 
           // TODO: gross toList
           childrenWithMatchingEdges.toList.map ( c =>  
-            (c, PathQueryProbe(queryPath.tail, va.vertex::matchSoFar))
+            (c, PathQueryProbe(queryPath.tail, va.vertex.id::matchSoFar))
           )
         }
       } else List() // finish with no match found

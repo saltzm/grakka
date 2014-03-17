@@ -17,7 +17,7 @@ object GraphRunner extends Application {
 
   // Create path query
   val query = List(
-    (Vertex("1", Map("label" -> "1"), Set()), Edge("0")),
+    (Vertex("1", Map("id" -> "1"), Set()), Edge("0")),
     (Vertex("2", Map("label" -> "2"), Set()), Edge("1")),
     (Vertex("3", Map("label" -> "3"), Set()), Edge("1"))/*,*/
     //(Vertex("4", Map("label" -> "4"), Set()), Edge("1")),

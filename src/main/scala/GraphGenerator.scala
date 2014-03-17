@@ -22,7 +22,7 @@ object GraphGenerator {
           Edge(rand.nextInt(nEdgeTypes).toString))
       ).toSet
       graph ! AddVertex(Vertex(i.toString, Map("label" ->
-        rand.nextInt(nLabels).toString), children))
+        rand.nextInt(nLabels).toString, "id" -> i.toString), children))
     }
     println(s"nEdges: $nEdges")
     graph ! StopLoading
