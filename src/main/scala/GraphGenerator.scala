@@ -9,7 +9,7 @@ object GraphGenerator {
   private def lognormal (mean: Double, stdDev: Double) = 
     math.exp(mean + rand.nextGaussian() * stdDev).toInt
   private val rand = new Random
-
+  // TODO: Refactor these two together
   def generateRandomGraph (graph: ActorRef, nVertices: Int, avDegree: Int,
     nLabels: Int, nEdgeTypes: Int): Unit = {
     var nEdges = 0
@@ -22,7 +22,7 @@ object GraphGenerator {
           Edge(rand.nextInt(nEdgeTypes).toString))
       ).toSet
       graph ! AddVertex(Vertex(i.toString, Map("label" ->
-        rand.nextInt(nLabels).toString), children))
+        rand.nextInt(nLabels).toString, "id" -> i.toString), children))
     }
     println(s"nEdges: $nEdges")
     graph ! StopLoading
@@ -40,7 +40,7 @@ object GraphGenerator {
           Edge(rand.nextInt(nEdgeTypes).toString))
       ).toSet
       graph ! AddVertex(Vertex(i.toString, Map("label" ->
-        rand.nextInt(nLabels).toString), children))
+        rand.nextInt(nLabels).toString, "id" -> i.toString), children))
     }
     println(s"nEdges: $nEdges")
     graph ! StopLoading

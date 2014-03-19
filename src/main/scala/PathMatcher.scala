@@ -19,9 +19,12 @@ class PathMatcher (graph: ActorRef, query: List[(Vertex, Edge)], input: String)
   def receive = {
     case mat: List[Vertex] => 
       numberOfMessagesReceived += 1
-      val formattedMessage = mat.reverse.map(v=> (v.id, "label: " + v.attributes("label")))
-      if (numberOfMessagesReceived < 10)
-        println(s"${self.path}: $formattedMessage") // TODO
+      if (numberOfMessagesReceived < 10) {
+        val formattedMessage = 
+          mat.reverse map(v=> (v.id, "label: " + v.attributes("label")))
+        println(s"${self.path}: $formattedMessage at " +
+          (System.currentTimeMillis() - start) + "ms") // TODO
+      }
       else if (numberOfMessagesReceived % 100 == 0)
         print(numberOfMessagesReceived + " at " + (System.currentTimeMillis() -
         start) + "ms, ")
@@ -35,9 +38,10 @@ class PathMatcher (graph: ActorRef, query: List[(Vertex, Edge)], input: String)
     matchSoFar: List[Vertex]) extends Probe (self) {
 
     // vcf: vertex comparison function
-    // TODO make more efficient
     private def vcf (qv: Vertex, v2: Vertex): Boolean =
-      qv.attributes.toSet.subsetOf(v2.attributes.toSet) 
+      qv.attributes.forall { case (k, v) => 
+        v2.attributes.contains(k) && v2.attributes(k) == v 
+      }
 
     // Checks if the vertex label matches first vertex in the path
     // If so, sends the probe to all of the children vertices except with the
