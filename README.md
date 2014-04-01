@@ -3,6 +3,8 @@ grakka
 
 A Reactive Multiagent Framework for Distributed Graph Mining
 
+Note: The following ideas are pretty preliminary.
+
 Actor Hierarchy
 * GraphRunner
   * GraphActor
@@ -27,7 +29,10 @@ General Execution Pattern:
 
 1.  GraphRunner starts
 2.  GraphActor starts
+  * Starts m GraphPartitionActors (or 1, and resizes later on, need to decide)
 3.  Add vertices and edges to graph by:
-  * Using graph generator
+  * Using GraphGenerator
   * Loading graph from file
   * Manually sending AddVertex and AddEdge messages
+    * Adding a vertex (several ideas, need to choose):
+      1. Check if vertex already exists
