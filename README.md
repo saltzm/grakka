@@ -36,7 +36,7 @@ General Execution Pattern:
   * Loading graph from file
   * Manually sending AddVertex and AddEdge messages
     * Adding a vertex (several ideas, need to choose):
-      1. Vertex assigned to partition based on id % (# of paritionsGraphActor messages its partitions to determine if a vertex with its id already exists
+      1. Vertex assigned to partition based on *id % (# of paritions)*. GraphActor messages the partition based on the hash to determine if a vertex with its id already exists
       2. Collects responses from the partitions
         * If one of them responds positively, send the new vertex to that one to update (Map-style add, replaces old value without complaining, also possible to distinguish between add and update, decide later)
         * If none respond positively, send the new vertex to the next GraphPartitionActor to be added (in a round robin manner, keeping partitions balanced)
