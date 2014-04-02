@@ -20,7 +20,7 @@ remain online in between the execution of different algorithms. Furthermore, it
 is possible (though probably very slow, I'll need to test this) to run multiple
 algorithms on the graph as the same time through the use of algorithm ids on the
 probes.  The whole thing will be in-memory and distributed. Now let's get into
-the juice:
+the juice.
 
 Note: The following ideas are pretty preliminary. The code I have so far was a
 quick prototype I whipped up, not distributed, and not fault-tolerant. But it
