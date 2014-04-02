@@ -41,7 +41,7 @@ GraphRunner Responsibilities:
 * Handling failure from either GraphActor or GraphAlgorithm
 
 GraphActor Responsibilities:
-* State: Partition refs
+* State: Set of ActorRefs for the GraphPartitionActors
 * Start and handle failure from partitions
 * AddVertex(vertex: Vertex) 
 * AddEdge(fromVertexId: Int, toVertexId: Int, edge: Edge) // Edge is just a container for attributes (right now)
