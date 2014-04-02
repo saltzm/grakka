@@ -71,7 +71,8 @@ GraphPartitionActor Responsibilities:
 VertexActor Responsibilities:
 * State: 
   * Map from attribute names to attribute values.  Things like "name" ->
-  "Matthew", "city" -> "Lyon" and so on.
+  "Matthew", "city" -> "Lyon" and so on. (This is just contained in the Vertex
+  class.)
   * Set of children ActorRefs, that it watches and handles on termination
   * A bin (data structure to be determined. probably a map from algorithm name
     to a value, or even to a map) for probes to leave and pick up things
