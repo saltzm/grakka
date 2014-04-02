@@ -60,8 +60,8 @@ GraphPartitionActor Responsibilities:
   actor pointed to by the ActorRef can keep on existing (I don't like this at
   all) even when it's not in the graph, in case another one with the same id is
   added. (I don't think I'll do this, but I'm just writing it here to remember.)
-* GetVertexRef(vertexId: Int) // May throw VertexDoesNotExist exception 
 * SendProbeToVertex(vertexId: Int, probe: Probe) // May throw VertexDoesNotExist exception 
+* EdgeVertexRefRequest(fromVertexId: Int, fromVertexPartition: ActorRef, toVertexId: Int)
 * AddVertex
 * Forward on appropriate messages from GraphActor to VertexActor
   (Add/Remove Attr to/from Vertex)
@@ -87,7 +87,9 @@ General Execution Pattern:
 1. GraphRunner starts
 2. GraphActor starts
   * Starts m GraphPartitionActors (or 1, and resizes later on, need to decide)
-    * Each GraphPartitionActor instantiates an empty Map from vertex id to ActorRef that it will use to determine if it contains a vertex and to send messages to a vertex
+    * Each GraphPartitionActor instantiates an empty Map from vertex id to
+      ActorRef that it will use to determine if it contains a vertex and to send
+      messages to a vertex
 3.  Add vertices and edges to graph by:
   * Using GraphGenerator
   * Loading graph from file
@@ -95,11 +97,26 @@ General Execution Pattern:
     * Adding a vertex:
       * Vertex assigned to partition based on *id % (# of partitions)*.
         GraphActor messages the partition based on the hash to add the vertex.
-        If the vertex already exists, it replaces the old vertex state with the
-        new vertex state (like when you add an item to a Map with a key that
-        already exists).
+        * If the vertex already exists, it replaces the old vertex state with the
+          new vertex state (like when you add an item to a Map with a key that
+          already exists).
+        * If not, it starts a new VertexActor with the state of the new vertex
+          and adds the ActorRef to its Map from vertex id to ActorRef
     * Adding an edge 
-      1. GraphActor sends GetVertexRef(toVertexId) message to the correct partition 
-        * In the case that the vertex does not exist, either (decide): throw VertexDoesNotExist exception in the partition, or send a VertexDoesNotExist message to the graph.  The first makes a bit more sense, I think, as the failure handling strategy should be encapsulated in the supervisor strategy. Need to decide if trying to add an invalid edge is enough to shut the program down or if it should just log an error and keep going. Need to further consider use cases, whether or not users can add edges at runtime via command line (in which case a simple error message might be nice, without shutting down), etc.
-      3. If it succeeds, receives a VertexRef(vertId, end an AddEdge(fromVertexId, toVertexRef) to the partition with fromVertexId (based on a hash)
-      2. If 
+      * GraphActor sends EdgeVertexRefRequest(fromVertexId: Int, fromVertexPartition: ActorRef, toVertexId: Int)
+          message to GraphPartitionActor for the toVertexId. If toVertex exists, 
+          send AddChild(fromVertexId: Int, toVertexActorRef: ActorRef) message to 
+          fromVertexPartition, which then checks if fromVertex exists, and if so
+          sends the toVertexActorRef to the fromVertex to add to its set of
+          children
+        * In the case that either vertex does not exist, either (decide): throw
+          VertexDoesNotExist exception in the partition, or send a
+          VertexDoesNotExist message to the graph.  The first makes a bit more
+          sense, I think, as the failure handling strategy should be
+          encapsulated in the supervisor strategy. Need to decide if trying to
+          add an invalid edge is enough to shut the program down or if it should
+          just log an error and keep going. Need to further consider use cases,
+          whether or not users can add edges at runtime via command line (in
+          which case a simple error message might be nice, without shutting
+          down), etc.
+
