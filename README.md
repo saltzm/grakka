@@ -74,7 +74,7 @@ VertexActor Responsibilities:
   "Matthew", "city" -> "Lyon" and so on.
   * Set of children ActorRefs, that it watches and handles on termination
   * A bin (data structure to be determined. probably a map from algorithm name
-    to a value) for probes to leave and pick up things
+    to a value, or even to a map) for probes to leave and pick up things
 * Handle adding/removing attributes/throwing exception if attribute to remove
   doesn't exist  
 * Receive probes and execute their behavior to:
