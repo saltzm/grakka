@@ -18,15 +18,27 @@ GraphRunner Responsibilities:
 * Handling failure from either GraphActor or GraphAlgorithm
 
 GraphActor Responsibilities:
+* State: Partition refs
 * Start and handle failure from partitions
-* AddVertex(vertex: Vertex)
+* AddVertex(vertex: Vertex) 
 * AddEdge(fromVertexId: Int, toVertexId: Int, edge: Edge) // Edge is just a container for attributes (right now)
 * RemoveVertex(vertexId: Int)
 * RemoveEdge(fromVertexId: Int, toVertexId: Int, edge: Edge)
-* AddAttributeToVertex(attrName: String, attrValue: String)
-* RemoveAttributeFromVertex(attrName: String)
+* AddAttributeToVertex(vertexId: Int, attrName: String, attrValue: String)
+* RemoveAttributeFromVertex(vertexId: Int, attrName: String) // Should this complain if the vertex doesn't exist?
 * SendProbeToVertex(vertexId: Int, probe: Probe) // May make this any message and not just probe but that causes issues Vertex-side
 * BroadcastProbeToVertices(probe: Probe) 
+
+GraphPartitionActor Responsibilities:
+* State: Map from vertexId to ActorRef 
+* GetVertexRef(vertexId: Int) // May throw VertexDoesNotExist exception 
+* SendProbeToVertex(vertexId: Int, probe: Probe) // May throw VertexDoesNotExist exception 
+* Forward on appropriate messages from GraphActor to VertexActor
+  (Add/Remove Attr to/from Vertex)
+* Handle failures from VertexActor (Exceptions on removing attrs, if I decide to
+  keep that)
+
+VertexActor Responsibilities:
 
 
 General Execution Pattern:

@@ -1,15 +1,19 @@
 
 
-Distributed (or at least parallel) graph framework
-Agents:
-    Graph -> Responsible for initial access to vertices
-    PathFinder -> Responsible for sending probes and collecting results
-    Probe -> like a reactive agent 
-
-TODO:
-
-add edge label capabilities
-    what is an edge?
-    just a set of attributes that can be attached to a child
 read in data files
 distribution
+
+tree matching:
+
+send out a probe that branches only if the current node has matching outgoing
+edges for every next edge in the tree, and if it reaches the end of it's path,
+send a "path complete" message to the coordinator with the id of it's starting
+vertex.  the coordinator knows how many leaf nodes there should be in the tree.
+it keeps a count for each of the incoming messages from nodes with each vertex
+id. every source vertex with > # of leaves "path complete" messages is the root
+of a match.  After this, for all of the matches send a new round of probes that
+send the actual matches themselves instead of just a count. in this way we avoid
+communication issues. if we don't send the actual messages we can at least count
+the number of matches immediately
+
+to do subgraph matching, decompose into trees ???
