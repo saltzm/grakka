@@ -41,7 +41,8 @@ GraphRunner Responsibilities:
 * Handling failure from either GraphActor or GraphAlgorithm
 
 GraphActor Responsibilities:
-* State: Set of ActorRefs for the GraphPartitionActors
+* State: Set of ActorRefs for the GraphPSet of ActorRefs for the
+  GraphPartitionActors
 * Start and handle failure from partitions
 * AddVertex(vertex: Vertex) 
 * AddEdge(fromVertexId: Int, toVertexId: Int, edge: Edge) // Edge is just a container for attributes (right now)
@@ -61,6 +62,7 @@ GraphPartitionActor Responsibilities:
   added. (I don't think I'll do this, but I'm just writing it here to remember.)
 * GetVertexRef(vertexId: Int) // May throw VertexDoesNotExist exception 
 * SendProbeToVertex(vertexId: Int, probe: Probe) // May throw VertexDoesNotExist exception 
+* AddVertex
 * Forward on appropriate messages from GraphActor to VertexActor
   (Add/Remove Attr to/from Vertex)
 * Handle failures from VertexActor (Exceptions on removing attrs, if I decide to
@@ -90,11 +92,12 @@ General Execution Pattern:
   * Using GraphGenerator
   * Loading graph from file
   * Manually sending AddVertex and AddEdge messages
-    * Adding a vertex (several ideas, need to choose):
-      1. Vertex assigned to partition based on *id % (# of partitions)*. GraphActor messages the partition based on the hash to determine if a vertex with its id already exists
-      2. Collects responses from the partitions
-        * If one of them responds positively, send the new vertex to that one to update (Map-style add, replaces old value without complaining, also possible to distinguish between add and update, decide later)
-        * If none respond positively, send the new vertex to the next GraphPartitionActor to be added (in a round robin manner, keeping partitions balanced)
+    * Adding a vertex:
+      * Vertex assigned to partition based on *id % (# of partitions)*.
+        GraphActor messages the partition based on the hash to add the vertex.
+        If the vertex already exists, it replaces the old vertex state with the
+        new vertex state (like when you add an item to a Map with a key that
+        already exists).
     * Adding an edge 
       1. GraphActor sends GetVertexRef(toVertexId) message to the correct partition 
         * In the case that the vertex does not exist, either (decide): throw VertexDoesNotExist exception in the partition, or send a VertexDoesNotExist message to the graph.  The first makes a bit more sense, I think, as the failure handling strategy should be encapsulated in the supervisor strategy. Need to decide if trying to add an invalid edge is enough to shut the program down or if it should just log an error and keep going. Need to further consider use cases, whether or not users can add edges at runtime via command line (in which case a simple error message might be nice, without shutting down), etc.
