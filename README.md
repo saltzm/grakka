@@ -3,7 +3,30 @@ grakka
 
 A Reactive Multiagent Framework for Distributed Graph Mining
 
-Note: The following ideas are pretty preliminary.
+Basic idea: Treat the graph as an environment that can be analyzed and explored
+by Probes. Each vertex is an actor that contains a bin where Probes can leave
+and pick up things, and it can pass Probes along to other vertices or actors
+(like result collectors) by executing the nextStep function of the probe on
+itself. (I know this sounds evil but it won't break encapsulation, don't worry.)
+To define a new graph algorithm, it's only necessary to define a new Probe and
+an actor that sends them and handles their responses. (For some algorithms, like
+a path query algorithm, this is fairly easy. For others, maybe not so much. The
+plan is that I'll provide the implementations of some more complex and common
+algorithms here later on. I'm starting with path queries. By default, everything
+is asynchronous, but BSP style algorithms can be implemented as well. I'll found
+out later how effectively.) Since the behavior of the algorithm is contained
+external to the vertices themselves (unlike Pregel, for example), the graph can
+remain online in between the execution of different algorithms. Furthermore, it
+is possible (though probably very slow, I'll need to test this) to run multiple
+algorithms on the graph as the same time through the use of algorithm ids on the
+probes.  The whole thing will be in-memory and distributed. Now let's get into
+the juice:
+
+Note: The following ideas are pretty preliminary. The code I have so far was a
+quick prototype I whipped up, not distributed, and not fault-tolerant. But it
+did work for path queries on up to 200,000 nodes on my Macbook Air with 2G of
+RAM pretty quickly. So now I'm trying to make it better and actually a real
+thing. Here ya go.
 
 Actor Hierarchy
 * GraphRunner
@@ -30,7 +53,12 @@ GraphActor Responsibilities:
 * BroadcastProbeToVertices(probe: Probe) 
 
 GraphPartitionActor Responsibilities:
-* State: Map from vertexId to ActorRef 
+* State: Map from vertexId to ActorRef. If a vertex is removed, depending on
+  whether or not there are issues with respawning an actor with the same id
+  (need to read back in the docs), I may add an "active" flag here so that the
+  actor pointed to by the ActorRef can keep on existing (I don't like this at
+  all) even when it's not in the graph, in case another one with the same id is
+  added. (I don't think I'll do this, but I'm just writing it here to remember.)
 * GetVertexRef(vertexId: Int) // May throw VertexDoesNotExist exception 
 * SendProbeToVertex(vertexId: Int, probe: Probe) // May throw VertexDoesNotExist exception 
 * Forward on appropriate messages from GraphActor to VertexActor
@@ -39,6 +67,17 @@ GraphPartitionActor Responsibilities:
   keep that)
 
 VertexActor Responsibilities:
+* State: 
+  * Map from attribute names to attribute values.  Things like "name" ->
+  "Matthew", "city" -> "Lyon" and so on.
+  * Set of children ActorRefs, that it watches and handles on termination
+  * A bin (data structure to be determined. probably a map from algorithm name
+    to a value) for probes to leave and pick up things
+* Handle adding/removing attributes/throwing exception if attribute to remove
+  doesn't exist  
+* Receive probes and execute their behavior to:
+  1. Add things to the bin
+  2. Send their generated messages to their desired destinations
 
 
 General Execution Pattern:
