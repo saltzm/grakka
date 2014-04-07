@@ -7,7 +7,7 @@ case class Vertex(id: Id, attributes: Map[String, String]) {
   def removeAttribute(k: String) = Vertex(id, attributes - k)
 }
 
-case class Edge(childRef: ActorRef, attributes: Map[String, String])
+case class Edge(childRef: ActorRef, attributes: Set[String])
 
 object VertexActor {
  def props(v: Vertex): Props = Props(new VertexActor(v))

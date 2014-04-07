@@ -41,8 +41,7 @@ GraphRunner Responsibilities:
 * Handling failure from either GraphActor or GraphAlgorithm
 
 GraphActor Responsibilities:
-* State: Set of ActorRefs for the GraphPSet of ActorRefs for the
-  GraphPartitionActors
+* State: Set of ActorRefs for the Set of ActorRefs for the GraphPartitionActors
 * Start and handle failure from partitions
 * AddVertex(vertex: Vertex) 
 * AddEdge(fromVertexId: Int, toVertexId: Int, edge: Edge) // Edge is just a container for attributes (right now)
@@ -61,7 +60,7 @@ GraphPartitionActor Responsibilities:
   all) even when it's not in the graph, in case another one with the same id is
   added. (I don't think I'll do this, but I'm just writing it here to remember.)
 * SendProbeToVertex(vertexId: Int, probe: Probe) // May throw VertexDoesNotExist exception 
-* EdgeVertexRefRequest(fromVertexId: Int, fromVertexPartition: ActorRef, toVertexId: Int)
+* EdgeReferenceRequest(fromVertexId: Int, fromVertexPartition: ActorRef, toVertexId: Int)
 * AddVertex
 * Forward on appropriate messages from GraphActor to VertexActor
   (Add/Remove Attr to/from Vertex)
