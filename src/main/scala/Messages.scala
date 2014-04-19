@@ -12,11 +12,31 @@ object Messages {
   // GraphPartitionActor
   case class AddVertex(v: Vertex)
   case class RemoveVertex(vId: Id)
-  case class SendProbeToVertex(vId: Id, probe: Probe) 
+  case class SendMessageToVertex(vId: Id, message: Any) 
   case class EdgeReferenceRequest(
     requestingVertexId: Id,
     requestingVertexPartition: ActorRef,
     edgeAttributes: Set[String],
     requestedVertexId: Id)
   case class AddEdgeToVertex(vertexId: Id, childId: Id, edge: Edge)
+
+  //GraphActor
+  case class AddEdge(vertexId: Id, childId: Id, edgeAttrs: Set[String])
+  case class RemoveEdge(vertexId: Id, childId: Id)
+  case class AddAttributeToVertex(vertexId: Id, attrName: String, attrVal:
+    String)
+  case class RemoveAttributeFromVertex(vertexId: Id, attrName: String)
+  case class BroadcastMessage(message: Any)
+  case object StartLoading
+  case object StopLoading
 }
+
+case class Vertex(id: Id, attributes: Map[String, String]) {
+  def addAttribute(k: String, v: String) = Vertex(id, attributes + (k -> v))
+  def removeAttribute(k: String) = Vertex(id, attributes - k)
+}
+
+case class Edge(childRef: ActorRef, attributes: Set[String])
+
+
+

@@ -41,7 +41,7 @@ GraphRunner Responsibilities:
 * Handling failure from either GraphActor or GraphAlgorithm
 
 GraphActor Responsibilities:
-* State: Set of ActorRefs for the Set of ActorRefs for the GraphPartitionActors
+* State: Set of ActorRefs for the GraphPartitionActors
 * Start and handle failure from partitions
 * AddVertex(vertex: Vertex) 
 * AddEdge(fromVertexId: Int, toVertexId: Int, edge: Edge) // Edge is just a container for attributes (right now)
@@ -68,7 +68,7 @@ GraphPartitionActor Responsibilities:
   keep that)
 
 VertexActor Responsibilities:
-* State: 
+* State:  
   * Map from attribute names to attribute values.  Things like "name" ->
   "Matthew", "city" -> "Lyon" and so on. (This is just contained in the Vertex
   class.)
@@ -80,7 +80,6 @@ VertexActor Responsibilities:
 * Receive probes and execute their behavior to:
   1. Add things to the bin
   2. Send their generated messages to their desired destinations
-
 
 General Execution Pattern:
 

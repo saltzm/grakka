@@ -19,8 +19,9 @@ class GraphPartitionActor extends Actor {
       context.stop(vertexRefMap(vId))
       vertexRefMap -= vId
 
-    case SendProbeToVertex(vId, probe) => sendProbeToVertex(vId, probe)
-
+    case SendMessageToVertex(vId, message) => sendMessageToVertex(vId, message)
+    case BroadcastMessage(message) => 
+      for ((_, ref) <- vertexRefMap) ref ! message
     case EdgeReferenceRequest(
         requestingVertId, 
         requestingVertPartition,
@@ -31,6 +32,8 @@ class GraphPartitionActor extends Actor {
 
     case AddEdgeToVertex(vId, childId, edge) => 
       addEdgeToVertex(vId, childId, edge)
+
+    case RemoveEdge(v, childId) => vertexRefMap(v) ! RemoveChild(childId)
   }
 
   // TODO: Double-check ActorRef equality
@@ -55,15 +58,14 @@ class GraphPartitionActor extends Actor {
         existingVertexRef ! UpdateVertex(v)
     }
 
-  private def sendProbeToVertex(vId: Id, probe: Probe): Unit = 
+  private def sendMessageToVertex(vId: Id, message: Any): Unit = 
     vertexRefMap.get(vId) match {
       case None => throw new VertexDoesNotExistException(
         s"GraphPartitionActor.scala, VertexDoesNotExistException: Tried to send " +
-        s"$probe to vertex $vId, which does not exist")
-      case Some(vRef) => vRef ! probe
+        s"$message to vertex $vId, which does not exist")
+      case Some(vRef) => vRef ! message
     }
 
   private def addEdgeToVertex(fromVertId: Id, childId: Id, edge: Edge) = 
     vertexRefMap(fromVertId) ! AddChild(childId, edge)
-
 }
