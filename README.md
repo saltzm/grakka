@@ -119,3 +119,6 @@ General Execution Pattern:
           which case a simple error message might be nice, without shutting
           down), etc.
 
+NEW RANDOM IDEAS:
+To handle evolution over time, have a vertex keep track of all of its previous states when it is updated
+
